@@ -14,3 +14,36 @@ uploaded = st.file_uploader("📂 Upload PDF/DOCX/TXT files", accept_multiple_fi
 query = st.text_input("🔍 Enter your search query:")
 
 stop_words = set(stopwords.words('english'))
+def readwtv(files):
+    docs = []
+    filenames = []
+    for file in files:
+        content = file.read().decode(errors="ignore")
+        docs.append(content)
+        filenames.append(file.name)
+    return docs, filenames
+  def pp(text):
+    tokens = word_tokenize(text.lower())  
+    tokens = [t for t in tokens if t.isalnum() and t not in stop_words]  
+    return tokens
+  if uploaded:
+    raw_docs, doc_names = read_files(uploaded)
+    tokenizedbs = [preprocess(doc) for doc in raw_docs]
+    bmval=BM250kapi(tokenizedbs);
+    if query:
+        tokenized_query = pp(query)
+        scores = bmval.get_scores(tokenized_query)
+      ranked_results = sorted(
+            list(zip(doc_names, raw_docs, scores)),
+            key=lambda x: x[2],
+            reverse=True
+        )
+
+        st.subheader("Search Results")
+        for name, content, score in ranked_results:
+            if score > 0:
+                st.markdown(f"{name}\nScore: `{score:.2f}`")
+                st.write(content[:500] + ("..." if len(content) > 500 else ""))  
+                st.markdown("____")
+
+  
