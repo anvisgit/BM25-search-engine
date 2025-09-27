@@ -10,8 +10,6 @@ from collections import Counter
 import pandas as pd
 import plotly.express as px
 import random
-
-# Download NLTK data
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -76,11 +74,11 @@ if uploaded:
             reverse=True
         ) #creatinga list of tuples, sorted via 3rd elememt =>x[2]=>scores=>bm25vales
 
-        st.subheader("📊 Search Results")
+        st.subheader("Search Results")
         for name, content, score in ranked_results:
             if score > 0:
                 hassmth=True
-                st.markdown(f"📄 {name} — Score: `{score:.2f}`")
+                st.markdown(f"{name} — Score: `{score:.2f}`")
                 st.markdown("---")
             else:
                 st.info("Found Nothing Relevant in the given document")
@@ -97,4 +95,3 @@ if uploaded:
         figure = px.bar(df_words, x="Word", y="Frequency", title=f"Top {n} Words in Documents")
         st.plotly_chart(figure, key=f"top_words_chart{random.randint(0,1000000)}")
 
-#to add synonum expainsion wordcloud
